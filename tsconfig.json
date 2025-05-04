@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES6",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "CommonJS",
+    "module": "commonjs",
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
