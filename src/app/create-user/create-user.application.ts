@@ -1,7 +1,7 @@
 import { ErroCustom } from "../../errors/error-custom";
 import { UserEntity } from "../../models/user/user.entity";
 import { IEncrypt } from "../../providers/encrypt/iencrypt.interface";
-import { IMessagerBrokerAccess } from "../../providers/messager-broker-access/implementations/imessager-broker-access.interface";
+import { IMessagerBrokerAccess } from "../../providers/message-broker-acess/implementations/imessager-broker-acess.interface";
 import { ICreateUserDTO } from "./icreate-user-dto.interface";
 
 export class CreateUserApplication {

@@ -6,17 +6,25 @@ import {
   UpdatedAt,
   DataType,
 } from "sequelize-typescript";
+import {
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 
 @Table({
   tableName: "users",
 })
-export class UserEntity extends Model<UserEntity> {
+export class UserEntity extends Model<
+  InferAttributes<UserEntity>,
+  InferCreationAttributes<UserEntity>
+> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   })
-  declare id: number;
+  declare id: CreationOptional<number>;
 
   @Column({
     type: DataType.STRING,
@@ -44,10 +52,10 @@ export class UserEntity extends Model<UserEntity> {
   declare cellPhone: string;
 
   @CreatedAt
-  @Column
+  @Column({ type: DataType.DATE })
   declare createdAt: Date;
 
   @UpdatedAt
-  @Column
+  @Column({ type: DataType.DATE })
   declare updatedAt: Date;
 }
