@@ -1,4 +1,5 @@
 import amqp from "amqplib";
+import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
 import {
   IMessagerAccess,
@@ -7,8 +8,11 @@ import {
   IResponseAccessResponse,
 } from "../imessager-broker-acess.interface";
 
+dotenv.config();
+
 export class RabbitMQ implements IMessagerBrokerAccess {
-  private readonly URL: string = "amqp://guest:guest@localhost:5672";
+  private readonly URL: string =
+    process.env.RABBITMQ_URL ?? "amqp://guest:guest@localhost:5672";
 
   /**
    * Connect with messager broker
@@ -84,7 +88,9 @@ export class RabbitMQ implements IMessagerBrokerAccess {
    * @param message
    */
   async sendRPC(message: IMessagerAccess): Promise<IResponseAccessResponse> {
-    const timeout = 5000;
+    const timeout = process.env.RABBITMQ_TIMEOUT
+      ? Number(process.env.RABBITMQ_TIMEOUT)
+      : 5000;
     const corr = uuidv4();
     const conn = await amqp.connect(this.URL);
     const ch = await conn.createChannel();

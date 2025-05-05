@@ -1,8 +1,11 @@
+import dotenv from "dotenv";
 import { ErroCustom } from "../../errors/error-custom";
 import { UserEntity } from "../../models/user/user.entity";
 import { IEncrypt } from "../../providers/encrypt/iencrypt.interface";
 import { IMessagerBrokerAccess } from "../../providers/message-broker-acess/implementations/imessager-broker-acess.interface";
 import { ICreateUserDTO } from "./icreate-user-dto.interface";
+
+dotenv.config();
 
 export class CreateUserApplication {
   constructor(
@@ -24,10 +27,12 @@ export class CreateUserApplication {
       email: userSend.email,
       password: pwd,
       cellPhone: userSend.cellPhone,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     await this.messagerBroker.sendPubSub({
-      queue: "send-email-new-user",
+      queue: process.env.RABBIT_MQ_QUEUE_USER_CREATE ?? "send-email-new-user",
       message: {
         email: userSend.email,
         name: userSend.name,
