@@ -7,15 +7,25 @@ import {
 
 export class UserQueueRouter implements IRouterMessageBroker {
   /**
-   * Handle
-   * @param messagerBorker
+   * Registra o handler da fila "user-create" para criar um novo usuário.
+   * @param messageBroker Instância do broker de mensagens.
    */
-  handle(messagerBorkerT: IMessagerBrokerAccess) {
-    messagerBorkerT.listenRPC(
+  handle(messageBroker: IMessagerBrokerAccess): void {
+    messageBroker.listenRPC(
       "user-create",
       async (data: IMessagerAccessRequest) => {
-        const response = await createUserController.handle(data);
-        return response;
+        try {
+          return await createUserController.handle(data);
+        } catch (error) {
+          console.error("Erro ao processar 'user-create':", error);
+          return {
+            code: 500,
+            response: {
+              message: "Erro interno ao criar usuário",
+              details: String(error),
+            },
+          };
+        }
       }
     );
   }
