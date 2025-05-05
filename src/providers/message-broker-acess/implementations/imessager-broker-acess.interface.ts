@@ -14,61 +14,27 @@ export interface IMessagerAccessRequest {
 }
 
 export interface IRouterMessageBroker {
-  handle(messagerBorker: IMessagerBrokerAccess): void;
+  handle(messagerBroker: IMessagerBrokerAccess): void;
 }
 
 export interface IMessagerBrokerAccess {
   /**
-   * Connect with messager broker
+   * Send a message via Publish/Subscribe model.
+   * @param message Message object containing target queue and payload.
    */
-  connect(): Promise<any>;
+  sendPubSub(message: IMessagerAccess): Promise<void>;
 
   /**
-   * Create Queue
-   * @param channel
-   * @param queue
-   */
-  createQueue(channel: any, queue: string): Promise<any>;
-
-  /**
-   * Listen RPC Queue
-   * @param queue
-   * @param callback
-   */
-  listenRPC(queue: string, callback: CallableFunction): void;
-
-  /**
-   * Send Pub/Sub
-   * @param message
-   */
-  sendPubSub(message: IMessagerAccess): Promise<any>;
-
-  /**
-   * Send RPC
-   * @param message
+   * Send an RPC message and await response.
+   * @param message Message object containing queue and payload.
+   * @returns Structured response with code and content.
    */
   sendRPC(message: IMessagerAccess): Promise<IResponseAccessResponse>;
 
   /**
-   * Response RPC
-   * @param objResponse
+   * Listen to an RPC queue and process requests via callback.
+   * @param queue Queue name to bind.
+   * @param callback Handler function for incoming RPC requests.
    */
-  responseCallRPC(objResponse: {
-    queue: string;
-    replyTo: string;
-    correlationId: string;
-    response: IResponseAccessResponse;
-  }): Promise<void>;
-
-  /**
-   * Message Convert
-   * @param message
-   */
-  messageConvert(message: any): IResponseAccessResponse;
-
-  /**
-   * Message Request
-   * @param message
-   */
-  messageConvertRequest(message: any): IMessagerAccessRequest;
+  listenRPC(queue: string, callback: CallableFunction): void;
 }

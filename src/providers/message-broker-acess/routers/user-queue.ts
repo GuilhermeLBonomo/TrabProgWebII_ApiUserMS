@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import { createUserController } from "../../../app/create-user";
 import {
   IMessagerAccessRequest,
@@ -5,28 +6,38 @@ import {
   IRouterMessageBroker,
 } from "../implementations/imessager-broker-acess.interface";
 
+dotenv.config();
+
 export class UserQueueRouter implements IRouterMessageBroker {
   /**
-   * Registra o handler da fila "user-create" para criar um novo usuário.
-   * @param messageBroker Instância do broker de mensagens.
+   * Registers the handler for the user creation queue.
+   * @param messageBroker Instance of the message broker.
    */
   handle(messageBroker: IMessagerBrokerAccess): void {
-    messageBroker.listenRPC(
-      "user-create",
-      async (data: IMessagerAccessRequest) => {
-        try {
-          return await createUserController.handle(data);
-        } catch (error) {
-          console.error("Erro ao processar 'user-create':", error);
-          return {
-            code: 500,
-            response: {
-              message: "Erro interno ao criar usuário",
-              details: String(error),
-            },
-          };
-        }
+    const queueName = process.env.RABBIT_QUEUE_USER_CREATE;
+
+    if (!queueName) {
+      throw new Error(
+        "Missing required environment variable: RABBIT_QUEUE_USER_CREATE"
+      );
+    }
+
+    messageBroker.listenRPC(queueName, async (data: IMessagerAccessRequest) => {
+      try {
+        return await createUserController.handle(data);
+      } catch (error) {
+        console.error(
+          `[handle] Erro ao criar usuário na fila '${queueName}':`,
+          error
+        );
+        return {
+          code: 500,
+          response: {
+            message: "Internal error while creating user.",
+            details: error instanceof Error ? error.message : String(error),
+          },
+        };
       }
-    );
+    });
   }
 }
