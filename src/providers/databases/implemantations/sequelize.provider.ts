@@ -4,7 +4,7 @@ import { UserEntity } from "../../../models/user/user.entity";
 
 dotenv.config();
 
-const requiredEnv = ["DB_NAME", "DB_DIALECT", "DB_HOST", "DB_USER", "DB_PASS"];
+const requiredEnv = ["DB_NAME", "DB_DIALECT", "DB_HOST", "DB_USER", "DB_PASSWORD"];
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 
 if (missingEnv.length > 0) {
@@ -16,10 +16,10 @@ if (missingEnv.length > 0) {
 
 const sequelizeConnection = new Sequelize({
   database: process.env.DB_NAME,
-  dialect: process.env.DB_DIALECT as "postgres",
+  dialect: process.env.DB_DIALECT as "mysql",
   host: process.env.DB_HOST,
   username: process.env.DB_USER,
-  password: process.env.DB_PASS,
+  password: process.env.DB_PASSWORD,
   logging: process.env.DB_LOGGING === "true" ? console.log : false,
   pool: {
     max: Number(process.env.DB_POOL_MAX ?? 5),
